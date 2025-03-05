@@ -163,5 +163,7 @@ st.markdown("""
 """)
 
 # Add a fun footer
-st.markdown("---")
-st.markdown("Created with ❤️ to make statistics more intuitive!")
+# Footer
+st.divider()
+st.caption("© 2025 Correlation Teaching Tool | Developed for educational purposes")
+st.caption("Prof. José Américo – Coppead")
