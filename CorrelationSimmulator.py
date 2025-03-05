@@ -165,5 +165,5 @@ st.markdown("""
 # Add a fun footer
 # Footer
 st.divider()
-st.caption("© 2025 Correlation Teaching Tool | Developed for educational purposes")
+st.caption("© 2025 Correlation Analysis Teaching Tool | Developed for educational purposes")
 st.caption("Prof. José Américo – Coppead")
