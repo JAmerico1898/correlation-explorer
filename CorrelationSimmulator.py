@@ -24,7 +24,7 @@ def generate_curved_data(curvature=1.0, n_points=150):
     """Generate U-shaped data"""
     x = np.random.uniform(-2, 2, n_points)
     noise = np.random.normal(0, 0.1, n_points)
-    y = curvature * x**2 + noise - 2
+    y = (curvature**2) * x**2 + noise - 2
     return pd.DataFrame({'x': x, 'y': y})
 
 def generate_simpsons_data(slope_diff=-1, n_points=150):
@@ -44,7 +44,7 @@ def generate_simpsons_data(slope_diff=-1, n_points=150):
     return pd.concat([df_a, df_b])
 
 # Tabs for different scenarios
-tab1, tab2, tab3 = st.tabs(["Linear Correlation", "Non-linear Patterns", "Simpson's Paradox"])
+tab1, tab2 = st.tabs(["Linear Correlation", "Non-linear Patterns"])
 
 # Tab 1: Linear Correlation
 with tab1:
@@ -90,66 +90,14 @@ with tab2:
     # Plot
     fig = px.scatter(st.session_state.curved_data, x='x', y='y',
                      title=f"Correlation: {st.session_state.curved_data['x'].corr(st.session_state.curved_data['y']):.2f}")
+    fig.update_layout(
+        yaxis=dict(range=[-3, 8]),
+        xaxis=dict(range=[-2.5, 2.5])
+    )    
     st.plotly_chart(fig, use_container_width=True)
     
     st.info("📌 Even though there's a clear pattern, the correlation is near zero! This shows why we should always visualize our data.")
 
-# Tab 3: Simpson's Paradox
-with tab3:
-    st.header("3️⃣ Simpson's Paradox")
-    st.markdown("""
-        ### Understanding Simpson's Paradox
-        
-        Simpson's Paradox is a fascinating statistical phenomenon where a trend that appears in several groups disappears or reverses when the groups are combined. Here's a real-world example:
-
-        🏥 **The Medical School Example:**
-        - A medical school's admission data showed they accepted a higher percentage of men than women overall
-        - But when looking at each department separately, they actually accepted a higher percentage of women in EVERY department!
-        - How? Women applied more to competitive departments with lower acceptance rates
-        - Men applied more to less competitive departments with higher acceptance rates
-        
-        In our interactive plot below:
-        - Group A (orange) and Group B (blue) each show positive trends
-        - But when you look at all the data together, you might see a negative trend!
-        - This happens because Group B is shifted up and right from Group A
-        
-        Try adjusting the slope to see how the overall pattern can differ from the individual group patterns.
-    """)
-    
-    col1, col2 = st.columns([1, 2])
-    with col1:
-        slope_diff = st.slider("Group B Slope", -2.0, 2.0, -1.0, 0.1)
-        if st.button("🎲 Generate New Groups"):
-            st.session_state.simpson_data = generate_simpsons_data(slope_diff)
-    
-    # Initialize or update data
-    if 'simpson_data' not in st.session_state:
-        st.session_state.simpson_data = generate_simpsons_data(slope_diff)
-    
-    # Calculate correlations
-    overall_corr = st.session_state.simpson_data['x'].corr(st.session_state.simpson_data['y'])
-    group_a = st.session_state.simpson_data[st.session_state.simpson_data['group'] == 'Group A']
-    group_b = st.session_state.simpson_data[st.session_state.simpson_data['group'] == 'Group B']
-    corr_a = group_a['x'].corr(group_a['y'])
-    corr_b = group_b['x'].corr(group_b['y'])
-    
-    # Plot
-    fig = px.scatter(st.session_state.simpson_data, x='x', y='y', color='group',
-                     title=f"Overall Correlation: {overall_corr:.2f}")
-    st.plotly_chart(fig, use_container_width=True)
-    
-    # Show correlations
-    col1, col2, col3 = st.columns(3)
-    col1.metric("Overall Correlation", f"{overall_corr:.2f}")
-    col2.metric("Group A Correlation", f"{corr_a:.2f}")
-    col3.metric("Group B Correlation", f"{corr_b:.2f}")
-    
-    st.info("""
-        📌 **What to Notice:**
-        1. Look at the correlations above. Each group (A and B) might show positive correlations
-        2. But the overall correlation can be very different or even negative!
-        3. This is why it's crucial to check if your data contains distinct groups before drawing conclusions
-    """)
 
 # Key Takeaways
 st.divider()
@@ -165,5 +113,5 @@ st.markdown("""
 # Add a fun footer
 # Footer
 st.divider()
-st.caption("© 2025 Correlation Analysis Teaching Tool | Developed for educational purposes")
-st.caption("Prof. José Américo – Coppead")
+st.caption("2025 Correlation Teaching Tool | Developed for educational purposes")
+st.caption("Prof. José Américo – Coppead/UCAM")
